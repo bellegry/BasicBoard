@@ -81,6 +81,35 @@ app.delete("/api/posts/:id", async (req, res) => {
   }
 });
 
+// 글 수정 (update)
+app.put("/api/posts/:id", async (req, res) => {
+  try {
+    // ObjectId가 유효한 형식인지 확인
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: "Invalid Post ID" });
+    }
+
+    // 업데이트할 필드를 가져옴
+    const { writer, title, content } = req.body;
+
+    // 게시글 업데이트
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params.id,
+      { writer, title, content },
+      { new: true, runValidators: true } // new: true 옵션은 업데이트된 값을 반환
+    );
+
+    if (!updatedPost) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.json(updatedPost);
+  } catch (err) {
+    console.error("Error updating post:", err);
+    res.status(500).json({ message: "Server error: " + err.message });
+  }
+});
+
 // 서버 시작
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

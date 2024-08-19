@@ -27,8 +27,13 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  // Update 버튼 클릭 시 update.html로 이동
+  document.getElementById("updatePostBtn").addEventListener("click", function () {
+    window.location.href = `update.html?id=${postId}`;
+  });
+
   // 글 삭제
-  document.getElementById("deletePost").addEventListener("click", function () {
+  document.getElementById("deletePostBtn").addEventListener("click", function () {
     if (confirm("Are you sure you want to delete this post?")) {
       fetch(`/api/posts/${postId}`, {
         method: "DELETE",
