@@ -7,12 +7,12 @@ const app = express();
 
 // MongoDB 연결
 mongoose
-  .connect("mongodb+srv://bong:mignon245@bong-first.dwxm2.mongodb.net/BasicBoard?retryWrites=true&w=majority", {
+  .connect("mongodb://127.0.0.1:27017/BasicBoard", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("Connected to MongoDB Atlas"))
-  .catch((err) => console.error("MongoDB Atlas connection error:", err));
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 // 미들웨어 설정
 app.use(express.json());
