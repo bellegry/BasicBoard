@@ -4,10 +4,14 @@ const path = require("path");
 const Post = require("./models/Post"); // 모델 파일
 
 const app = express();
+require("dotenv").config();
+
+// 환경 변수에서 MongoDB 연결 URI를 가져오기
+const mongoURI = process.env.MONGODB_URI;
 
 // MongoDB 연결
 mongoose
-  .connect("mongodb+srv://bong:mignon245@bong-first.dwxm2.mongodb.net/BasicBoard?retryWrites=true&w=majority", {
+  .connect(mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
