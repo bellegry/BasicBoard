@@ -1,8 +1,11 @@
+// models/Post.js
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const postSchema = new mongoose.Schema({
-  writer: {
-    type: String,
+const postSchema = new Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // User 모델과 연결됨
     required: true,
   },
   title: {
@@ -13,10 +16,11 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  date: {
+  createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-module.exports = mongoose.model("Post", postSchema);
+const Post = mongoose.model("Post", postSchema);
+module.exports = Post;
