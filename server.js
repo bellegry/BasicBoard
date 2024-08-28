@@ -27,12 +27,6 @@ mongoose
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "dist")));
 
-// 기본 경로로 접근 시 index.html 제공
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
-});
-
-///////////////////////로그인///////////////////////
 // 미들웨어로 토큰 인증
 function authenticateToken(req, res, next) {
   const token = req.headers["authorization"];
@@ -45,25 +39,38 @@ function authenticateToken(req, res, next) {
   });
 }
 
+// 기본 경로로 접근 시 index.html 제공
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
+///////////////////////로그인///////////////////////
+
 // 로그인 후 토큰 발급
-app.post("/api/users/:userId", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   const { userId, password } = req.body;
+  console.log("req Body : " + req.body);
 
   try {
     // userId를 사용하여 데이터베이스에서 사용자 찾기
     const user = await User.findOne({ userId });
+    console.log(user);
 
     // 유저가 존재하지 않을 경우 에러 처리
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "유저없대 Invalid credentials" });
     }
 
     // 비밀번호가 맞는지 확인
-    const isMatch = await bcrypt.compare(password, user.password);
+    console.log("입력된 비밀번호:", password);
+    console.log("저장된 해시된 비밀번호:", user.password);
+
+    const isMatch = await bcrypt.compare(`` + password, `` + user.password);
+    console.log("비밀번호가 일치하는가?:", isMatch);
 
     // 비밀번호가 일치하지 않으면 에러 처리
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "비밀번호 일치 안해 Invalid credentials" });
     }
 
     // 유저가 존재하고 비밀번호가 일치하면 JWT 토큰 발급
@@ -75,6 +82,7 @@ app.post("/api/users/:userId", async (req, res) => {
 
     // 토큰을 클라이언트에게 반환
     res.json({ token });
+    res.json({ message: "Login successful!" });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Server error" });
@@ -86,10 +94,16 @@ app.post("/api/users", async (req, res) => {
   const { userId, name, password, email, phone, role } = req.body;
 
   try {
-    // 중복 체크
+    // ID 중복 체크
     const existingUser = await User.findOne({ userId });
     if (existingUser) {
       return res.status(400).json({ message: "User ID already exists" });
+    }
+
+    // 이메일 중복 체크
+    const existingUserByEmail = await User.findOne({ email });
+    if (existingUserByEmail) {
+      return res.status(400).json({ message: "Email already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -107,6 +121,36 @@ app.post("/api/users", async (req, res) => {
   } catch (err) {
     console.error("Registration error:", err); // 에러를 콘솔에 출력
     res.status(400).json({ message: "Registration failed", error: err.message });
+  }
+});
+
+// ID 중복 확인 API
+app.get("/api/users/check-id", async (req, res) => {
+  const { userId } = req.query;
+
+  try {
+    const existingUser = await User.findOne({ userId });
+    if (existingUser) {
+      return res.status(400).json({ message: "User ID already exists" });
+    }
+    res.json({ message: "User ID is available" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error: " + err.message });
+  }
+});
+
+// 이메일 중복 확인 API
+app.get("/api/users/check-email", async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+    res.json({ message: "Email is available" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error: " + err.message });
   }
 });
 

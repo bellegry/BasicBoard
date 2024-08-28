@@ -19,6 +19,7 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
+    trim: true,
   },
   email: {
     type: String,
@@ -56,9 +57,9 @@ userSchema.pre("save", async function (next) {
 });
 
 // 비밀번호 확인
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
+// userSchema.methods.comparePassword = async function (candidatePassword) {
+//   return await bcrypt.compare(candidatePassword, this.password);
+// };
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

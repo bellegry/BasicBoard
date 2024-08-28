@@ -16,6 +16,50 @@ function checkPasswords() {
   }
 }
 
+// ID 중복 확인
+document.getElementById("checkUserId").addEventListener("click", async function () {
+  const userId = document.getElementById("userId").value;
+  const userIdCheckMessage = document.getElementById("userIdCheckMessage");
+
+  try {
+    const response = await fetch(`/api/users/check-id?userId=${userId}`);
+    const data = await response.json();
+
+    if (response.ok) {
+      userIdCheckMessage.textContent = "ID is available!";
+      userIdCheckMessage.style.color = "green";
+    } else {
+      userIdCheckMessage.textContent = data.message || "ID is already taken!";
+      userIdCheckMessage.style.color = "red";
+    }
+  } catch (error) {
+    userIdCheckMessage.textContent = "Error checking ID.";
+    userIdCheckMessage.style.color = "red";
+  }
+});
+
+// 이메일 중복 확인
+document.getElementById("checkEmail").addEventListener("click", async function () {
+  const email = document.getElementById("email").value;
+  const emailCheckMessage = document.getElementById("emailCheckMessage");
+
+  try {
+    const response = await fetch(`/api/users/check-email?email=${email}`);
+    const data = await response.json();
+
+    if (response.ok) {
+      emailCheckMessage.textContent = "Email is available!";
+      emailCheckMessage.style.color = "green";
+    } else {
+      emailCheckMessage.textContent = data.message || "Email is already taken!";
+      emailCheckMessage.style.color = "red";
+    }
+  } catch (error) {
+    emailCheckMessage.textContent = "Error checking Email.";
+    emailCheckMessage.style.color = "red";
+  }
+});
+
 // 폼 제출 시 비밀번호 일치 여부 확인 및 서버에 데이터 전송
 document.getElementById("signupForm").addEventListener("submit", async function (e) {
   e.preventDefault();
