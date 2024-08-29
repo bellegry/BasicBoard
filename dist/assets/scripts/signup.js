@@ -84,7 +84,7 @@ document.getElementById("signupForm").addEventListener("submit", async function 
   };
 
   try {
-    const response = await fetch("/api/users", {
+    const response = await fetch("/api/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

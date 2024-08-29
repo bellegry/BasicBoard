@@ -6,8 +6,6 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     password: document.getElementById("password").value,
   };
 
-  console.log("User Data : " + userData.userId + userData.password);
-
   try {
     const response = await fetch("/api/login", {
       method: "POST",

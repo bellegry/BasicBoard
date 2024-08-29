@@ -1,7 +1,6 @@
 // models/User.js
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const bcrypt = require("bcryptjs"); // 비밀번호 해시를 위한 bcrypt
 
 const userSchema = new Schema({
   userId: {
@@ -43,23 +42,6 @@ const userSchema = new Schema({
     default: Date.now,
   },
 });
-
-// 비밀번호 해시화
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
-
-// 비밀번호 확인
-// userSchema.methods.comparePassword = async function (candidatePassword) {
-//   return await bcrypt.compare(candidatePassword, this.password);
-// };
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

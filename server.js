@@ -16,10 +16,7 @@ const jwtSecret = process.env.JWT_SECRET;
 
 // MongoDB 연결
 mongoose
-  .connect(mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(mongoURI)
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch((err) => console.error("MongoDB Atlas connection error:", err));
 
@@ -32,7 +29,7 @@ function authenticateToken(req, res, next) {
   const token = req.headers["authorization"];
   if (!token) return res.sendStatus(401);
 
-  jwt.verify(token, "your_jwt_secret", (err, user) => {
+  jwt.verify(token, jwtSecret, (err, user) => {
     if (err) return res.sendStatus(403);
     req.user = user;
     next();
@@ -49,40 +46,25 @@ app.get("/", (req, res) => {
 // 로그인 후 토큰 발급
 app.post("/api/login", async (req, res) => {
   const { userId, password } = req.body;
-  console.log("req Body : " + req.body);
+  console.log("req Body : ", req.body);
 
   try {
-    // userId를 사용하여 데이터베이스에서 사용자 찾기
     const user = await User.findOne({ userId });
-    console.log(user);
 
-    // 유저가 존재하지 않을 경우 에러 처리
     if (!user) {
-      return res.status(400).json({ message: "유저없대 Invalid credentials" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // 비밀번호가 맞는지 확인
-    console.log("입력된 비밀번호:", password);
-    console.log("저장된 해시된 비밀번호:", user.password);
-
-    const isMatch = await bcrypt.compare(`` + password, `` + user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     console.log("비밀번호가 일치하는가?:", isMatch);
 
-    // 비밀번호가 일치하지 않으면 에러 처리
     if (!isMatch) {
-      return res.status(400).json({ message: "비밀번호 일치 안해 Invalid credentials" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // 유저가 존재하고 비밀번호가 일치하면 JWT 토큰 발급
-    const token = jwt.sign(
-      { userId: user.userId, name: user.name }, // user 객체에서 userId와 name을 가져옴
-      jwtSecret, // 환경 변수로 설정된 JWT 비밀 키
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ userId: user.userId, name: user.name }, jwtSecret, { expiresIn: "1h" });
 
-    // 토큰을 클라이언트에게 반환
     res.json({ token });
-    res.json({ message: "Login successful!" });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Server error" });
@@ -90,23 +72,23 @@ app.post("/api/login", async (req, res) => {
 });
 
 // 회원가입
-app.post("/api/users", async (req, res) => {
+app.post("/api/signup", async (req, res) => {
   const { userId, name, password, email, phone, role } = req.body;
 
   try {
-    // ID 중복 체크
     const existingUser = await User.findOne({ userId });
     if (existingUser) {
       return res.status(400).json({ message: "User ID already exists" });
     }
 
-    // 이메일 중복 체크
     const existingUserByEmail = await User.findOne({ email });
     if (existingUserByEmail) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
+    // 비밀번호 해싱
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = new User({
       userId,
       name,
@@ -119,7 +101,7 @@ app.post("/api/users", async (req, res) => {
     await user.save();
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    console.error("Registration error:", err); // 에러를 콘솔에 출력
+    console.error("Registration error:", err);
     res.status(400).json({ message: "Registration failed", error: err.message });
   }
 });
