@@ -52,14 +52,14 @@ app.post("/api/login", async (req, res) => {
     const user = await User.findOne({ userId });
 
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "아이디가 존재하지 않습니다." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     console.log("비밀번호가 일치하는가?:", isMatch);
 
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
     }
 
     const token = jwt.sign({ userId: user.userId, name: user.name }, jwtSecret, { expiresIn: "1h" });
