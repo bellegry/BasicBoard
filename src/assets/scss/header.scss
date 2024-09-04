@@ -1,0 +1,11 @@
+header ul {
+  background-color: aqua;
+  display: flex;
+}
+.auth {
+  display: none;
+}
+
+.auth.active {
+  display: block;
+}

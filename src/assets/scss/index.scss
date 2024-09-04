@@ -1,0 +1,10 @@
+@use "../../../node_modules/scss-reset/_reset.scss";
+
+@import "./main.scss";
+@import "./header.scss";
+@import "./footer.scss";
+
+@import "./board/insert.scss";
+@import "./board/list.scss";
+@import "./board/read.scss";
+@import "./board/update.scss";
