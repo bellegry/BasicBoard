@@ -13,7 +13,11 @@ exports.login = async (req, res) => {
     if (!isMatch) return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
 
     // JWT 생성 시 user._id를 포함해 생성
-    const token = jwt.sign({ userId: user._id, name: user.name }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(
+      { _id: user._id, userId: user.userId, name: user.name, password: user.password, email: user.email, phone: user.phone, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
     res.json({ token });
   } catch (err) {

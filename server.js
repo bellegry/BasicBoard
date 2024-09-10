@@ -25,7 +25,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/user", userRoutes);
 
 // 서버 시작
-const PORT = process.env.PORT || 5432;
+const PORT = process.env.PORT || 2450;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

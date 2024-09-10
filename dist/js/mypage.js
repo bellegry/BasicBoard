@@ -1,65 +1,39 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  const token = localStorage.getItem("token");
+function fetchUserProfile() {
+  const token = localStorage.getItem("token"); // 로컬 스토리지에서 JWT 토큰 가져오기
 
   if (!token) {
-    alert("You must log in to access this page.");
-    window.location.href = "login.html";
+    alert("로그인이 필요합니다.");
+    window.location.href = "../bong/login.html"; // 토큰이 없으면 로그인 페이지로 리다이렉트
     return;
   }
 
-  // 사용자 정보 가져오기
-  try {
-    const response = await fetch("/api/user/profile", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch profile");
-    }
-
-    const userData = await response.json();
-
-    // 입력 필드에 사용자 정보 채워넣기
-    document.getElementById("userId").value = userData.userId;
-    document.getElementById("name").value = userData.name;
-    document.getElementById("email").value = userData.email;
-    document.getElementById("phone").value = userData.phone;
-    document.getElementById("role").value = userData.role;
-  } catch (error) {
-    console.error("Error fetching profile:", error);
-  }
-
-  // 프로필 수정
-  document.getElementById("profileForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const updatedData = {
-      name: document.getElementById("name").value,
-      email: document.getElementById("email").value,
-      phone: document.getElementById("phone").value,
-    };
-
-    try {
-      const response = await fetch("/api/user/profile", {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedData),
-      });
-
+  fetch("/api/user/profile", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰 포함
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
       if (!response.ok) {
-        throw new Error("Failed to update profile");
+        throw new Error("프로필 정보를 가져오지 못했습니다.");
       }
+      return response.json(); // 서버 응답을 JSON 형식으로 변환
+    })
+    .then((data) => {
+      // 폼 필드에 사용자 프로필 데이터 넣기
+      console.log("data : " + JSON.stringify(data, null, 2));
+      document.getElementById("_id").value = data._id; // DB ID
+      document.getElementById("userId").value = data.userId; // 사용자 ID
+      document.getElementById("name").value = data.name; // 이름
+      document.getElementById("password").value = data.password; // 비밀번호
+      document.getElementById("email").value = data.email; // 이메일
+      document.getElementById("phone").value = data.phone; // 전화번호
+      document.getElementById("role").value = data.role; // 권한
+    })
+    .catch((error) => {
+      console.error("프로필 가져오기 오류:", error);
+    });
+}
 
-      alert("Profile updated successfully!");
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
-  });
-});
+document.addEventListener("DOMContentLoaded", fetchUserProfile); // DOM이 로드된 후 프로필 정보 가져오기
