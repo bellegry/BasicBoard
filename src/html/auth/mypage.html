@@ -13,15 +13,6 @@
     <section id="profile">
       <h2>Profile Information</h2>
       <form id="profileForm">
-        <label for="_id">ID: </label>
-        <input type="text" id="_id" name="_id" disabled /><br />
-
-        <label for="userId">User ID: </label>
-        <input type="text" id="userId" name="userId" disabled /><br />
-
-        <label for="password">Password: </label>
-        <input type="text" id="password" name="password" disabled /><br />
-
         <label for="name">Name: </label>
         <input type="text" id="name" name="name" /><br />
 
@@ -31,10 +22,17 @@
         <label for="phone">Phone: </label>
         <input type="tel" id="phone" name="phone" /><br />
 
-        <label for="role">Role: </label>
-        <input type="text" id="role" name="role" disabled /><br />
+        <label for="newPassword">New Password: </label>
+        <input type="password" id="newPassword" name="newPassword" /><br />
+        <label for="confirmPassword">Confirm Password: </label>
+        <input type="password" id="confirmPassword" name="confirmPassword" /><br />
+        <!-- 비밀번호 일치 메시지 표시 -->
+        <span id="passwordMatchMessage"></span>
+        <!-- // 비밀번호 일치 메시지 표시 -->
 
-        <button type="submit">Update Profile</button>
+        <button type="submit">내 정보 수정</button>
+
+        <button id="deleteAccountButton">회원 탈퇴</button>
       </form>
     </section>
   </body>
