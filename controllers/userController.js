@@ -3,27 +3,30 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 
 // 프로필 정보 조회
+// 프로필 정보 조회
 exports.getUserProfile = async (req, res) => {
   try {
-    const { _id } = req.user; // JWT에서 _id만 사용하여 DB에서 최신 정보 조회
-    console.log("Controller - req.user:", user);
+    const { _id } = req.user; // JWT에서 추출한 사용자 ID 사용
+    console.log("Controller - req.user:", req.user); // 디버깅용
 
+    // DB에서 최신 사용자 정보 조회
+    const user = await User.findById(_id);
     if (!user) {
-      return res.status(401).json({ message: "사용자를 찾을 수 없습니다." });
+      return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
     }
 
+    // 최신 사용자 정보를 응답으로 반환
     res.json({
-      _id: user._id, // _id를 사용
+      _id: user._id,
       userId: user.userId,
       name: user.name,
       email: user.email,
       phone: user.phone,
-      // password: user.password,
-      // role: user.role,
+      role: user.role,
     });
   } catch (err) {
     console.error("Profile fetch error:", err);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "프로필 정보를 가져오는 중 오류가 발생했습니다." });
   }
 };
 

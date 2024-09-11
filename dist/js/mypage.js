@@ -80,9 +80,9 @@ function updateUserProfile() {
       alert("프로필이 성공적으로 업데이트되었습니다!");
 
       // 갱신된 JWT 토큰을 저장
-      // if (data.token) {
-      //   localStorage.setItem("token", data.token); // 새 토큰을 localStorage에 저장
-      // }
+      if (data.token) {
+        localStorage.setItem("token", data.token); // 새 토큰을 localStorage에 저장
+      }
 
       // 수정된 정보를 반영하기 위해 프로필을 다시 불러옴
       checkLoginStatus();
