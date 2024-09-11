@@ -6,26 +6,49 @@
     <title>Sign Up</title>
     <link rel="stylesheet" href="../css/index.css" />
     <script type="module" src="../js/main.js" defer></script>
-    <script src="../js/signup.js" defer></script>
+    <script type="module" src="../js/signup.js" defer></script>
   </head>
   <body>
     <h2>Sign Up</h2>
     <form id="signupForm">
-      <input type="text" id="userId" placeholder="User ID" required />
+      <!-- User ID -->
+      <label for="userId">User ID</label>
+      <input type="text" id="userId" name="userId" placeholder="User ID" required />
+      <span id="userIdError" class="errorMessage"></span>
       <button type="button" id="checkUserId">Check ID</button>
-      <span id="userIdCheckMessage"></span>
       <br />
-      <input type="text" id="name" placeholder="Name" required />
-      <input type="email" id="email" placeholder="Email" required />
+
+      <!-- Name -->
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" placeholder="Name" required />
+      <span id="nameError" class="errorMessage"></span>
+      <br />
+
+      <!-- Email -->
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="Email" required />
+      <span id="emailError" class="errorMessage"></span>
       <button type="button" id="checkEmail">Check Email</button>
-      <span id="emailCheckMessage"></span>
       <br />
-      <input type="password" id="password" placeholder="Password" required />
-      <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
-      <!-- 비밀번호 일치 메시지 표시 -->
-      <span id="passwordMatchMessage"></span>
-      <!-- // 비밀번호 일치 메시지 표시 -->
-      <input type="text" id="phone" placeholder="Phone" required />
+
+      <!-- Password -->
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Password" required />
+      <span id="passwordError" class="errorMessage"></span>
+      <br />
+
+      <!-- Confirm Password -->
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required />
+      <span id="confirmPasswordError" class="errorMessage"></span>
+      <br />
+
+      <!-- Phone -->
+      <label for="phone">Phone</label>
+      <input type="text" id="phone" name="phone" placeholder="Phone" required />
+      <span id="phoneError" class="errorMessage"></span>
+      <br />
+
       <button type="submit">Sign Up</button>
     </form>
   </body>

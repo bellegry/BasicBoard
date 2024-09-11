@@ -1,3 +1,4 @@
+const { body, validationResult } = require("express-validator");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -26,24 +27,61 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.signup = async (req, res) => {
-  const { userId, name, password, email, phone, role } = req.body;
+exports.signup = [
+  // 유효성 검사
+  body("userId")
+    .notEmpty()
+    .withMessage("ID를 입력해주세요.")
+    .custom(async (userId) => {
+      const existingUser = await User.findOne({ userId });
+      if (existingUser) {
+        throw new Error("이미 존재하는 ID입니다.");
+      }
+    }),
+  body("email")
+    .notEmpty()
+    .withMessage("Email을 입력해주세요.")
+    .isEmail()
+    .withMessage("이메일 형식이 아닙니다.")
+    .custom(async (email) => {
+      const existingEmail = await User.findOne({ email });
+      if (existingEmail) {
+        throw new Error("이미 사용중인 이메일입니다.");
+      }
+    }),
+  body("password").notEmpty().withMessage("비밀번호를 입력해주세요."),
+  body("confirmPassword").custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error("비밀번호가 일치하지 않습니다.");
+    }
+    return true;
+  }),
 
-  try {
-    const existingUser = await User.findOne({ userId });
-    if (existingUser) return res.status(400).json({ message: "User ID already exists" });
+  // 유효성 검사 결과 처리
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-    const existingUserByEmail = await User.findOne({ email });
-    if (existingUserByEmail) return res.status(400).json({ message: "Email already exists" });
+    const { userId, name, password, email, phone, role } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    try {
+      const existingUser = await User.findOne({ userId });
+      if (existingUser) return res.status(400).json({ message: "User ID already exists" });
 
-    const user = new User({ userId, name, password: hashedPassword, email, phone, role });
+      const existingUserByEmail = await User.findOne({ email });
+      if (existingUserByEmail) return res.status(400).json({ message: "Email already exists" });
 
-    await user.save();
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (err) {
-    console.error("Registration error:", err);
-    res.status(400).json({ message: "Registration failed", error: err.message });
-  }
-};
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const user = new User({ userId, name, password: hashedPassword, email, phone, role });
+
+      await user.save();
+      res.status(201).json({ message: "User registered successfully" });
+    } catch (err) {
+      console.error("Registration error:", err);
+      res.status(400).json({ message: "Registration failed", error: err.message });
+    }
+  },
+];

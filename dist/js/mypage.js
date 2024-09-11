@@ -94,24 +94,6 @@ function updateUserProfile() {
     });
 }
 
-// 비밀번호 일치 여부 실시간 체크
-document.getElementById("newPassword").addEventListener("input", checkPasswords);
-document.getElementById("confirmPassword").addEventListener("input", checkPasswords);
-
-function checkPasswords() {
-  const password = document.getElementById("newPassword").value;
-  const confirmPassword = document.getElementById("confirmPassword").value;
-  const messageElement = document.getElementById("passwordMatchMessage");
-
-  if (password === confirmPassword) {
-    messageElement.textContent = "비밀번호가 일치합니다.";
-    messageElement.style.color = "green";
-  } else {
-    messageElement.textContent = "비밀번호가 일치하지 않습니다!";
-    messageElement.style.color = "red";
-  }
-}
-
 // 회원 탈퇴
 function deleteUserProfile() {
   const token = localStorage.getItem("token");
@@ -163,4 +145,43 @@ document.getElementById("profileForm").addEventListener("submit", (e) => {
   e.preventDefault(); // 폼 기본 제출 방지
   updateUserProfile(); // 프로필 업데이트 함수 호출
   checkLoginStatus(); // 업데이트 후 새로 토큰 정보 읽어오기
+});
+
+// 유효성검사
+// 실시간 검수
+import { validateUserId, validateEmail, validatePassword, validatePasswordMatch } from "./validation.js";
+
+document.getElementById("userId").addEventListener("input", function () {
+  const userId = document.getElementById("userId").value.trim();
+  const userIdError = document.getElementById("userIdError");
+  validateUserId(userId, userIdError);
+});
+
+document.getElementById("email").addEventListener("input", function () {
+  const email = document.getElementById("email").value.trim();
+  const emailError = document.getElementById("emailError");
+  validateEmail(email, emailError);
+});
+
+document.getElementById("password").addEventListener("input", function () {
+  const password = document.getElementById("password").value;
+  const passwordError = document.getElementById("passwordError");
+  validatePassword(password, passwordError);
+});
+
+document.getElementById("confirmPassword").addEventListener("input", function () {
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+  const confirmPasswordError = document.getElementById("confirmPasswordError");
+  validatePasswordMatch(password, confirmPassword, confirmPasswordError);
+});
+
+// 버튼 입력시 이메일 중복 검수
+import { checkEmail } from "./validation.js";
+
+document.getElementById("checkEmail").addEventListener("click", async function () {
+  const email = document.getElementById("email").value;
+  const emailCheckMessage = document.getElementById("emailCheckMessage");
+
+  await checkEmail(email, emailCheckMessage);
 });

@@ -6,33 +6,54 @@
     <title>Login</title>
     <link rel="stylesheet" href="../css/index.css" />
     <script type="module" src="../js/main.js" defer></script>
-    <script src="../js/mypage.js" defer></script>
+    <script type="module" src="../js/mypage.js" defer></script>
   </head>
   <body>
     <h2>MyPage</h2>
     <section id="profile">
       <h2>Profile Information</h2>
       <form id="profileForm">
-        <label for="name">Name: </label>
-        <input type="text" id="name" name="name" /><br />
+        <!-- User ID -->
+        <label for="userId">User ID</label>
+        <input type="text" id="userId" name="userId" disabled />
+        <input type="hidden" id="hiddenUserId" name="userId" />
+        <!-- Hidden User ID for form submission -->
+        <br />
 
-        <label for="email">Email: </label>
-        <input type="email" id="email" name="email" /><br />
+        <!-- Name -->
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Name" required />
+        <span id="nameError" class="errorMessage"></span>
+        <br />
 
-        <label for="phone">Phone: </label>
-        <input type="tel" id="phone" name="phone" /><br />
+        <!-- Email -->
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Email" required />
+        <span id="emailError" class="errorMessage"></span>
+        <button type="button" id="checkEmail">Check Email</button>
+        <br />
 
-        <label for="newPassword">New Password: </label>
-        <input type="password" id="newPassword" name="newPassword" /><br />
-        <label for="confirmPassword">Confirm Password: </label>
-        <input type="password" id="confirmPassword" name="confirmPassword" /><br />
-        <!-- 비밀번호 일치 메시지 표시 -->
-        <span id="passwordMatchMessage"></span>
-        <!-- // 비밀번호 일치 메시지 표시 -->
+        <!-- Password -->
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Password" required />
+        <span id="passwordError" class="errorMessage"></span>
+        <br />
 
-        <button type="submit">내 정보 수정</button>
+        <!-- Confirm Password -->
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required />
+        <span id="confirmPasswordError" class="errorMessage"></span>
+        <br />
 
-        <button id="deleteAccountButton">회원 탈퇴</button>
+        <!-- Phone -->
+        <label for="phone">Phone</label>
+        <input type="text" id="phone" name="phone" placeholder="Phone" required />
+        <span id="phoneError" class="errorMessage"></span>
+        <br />
+
+        <!-- Buttons -->
+        <button type="submit">수정</button>
+        <button type="button" id="deleteAccountButton">회원 탈퇴</button>
       </form>
     </section>
   </body>
