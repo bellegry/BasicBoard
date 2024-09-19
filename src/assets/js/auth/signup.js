@@ -91,7 +91,7 @@ import { checkUserId, checkEmail } from "./validation.js";
 // ID 중복 확인
 document.getElementById("checkUserId").addEventListener("click", async function () {
   const userId = document.getElementById("userId").value;
-  const userIdCheckMessage = document.getElementById("userIdCheckMessage");
+  const userIdCheckMessage = document.getElementById("userIdError");
 
   await checkUserId(userId, userIdCheckMessage);
 });
@@ -99,7 +99,7 @@ document.getElementById("checkUserId").addEventListener("click", async function 
 // Email 중복 확인
 document.getElementById("checkEmail").addEventListener("click", async function () {
   const email = document.getElementById("email").value;
-  const emailCheckMessage = document.getElementById("emailCheckMessage");
+  const emailCheckMessage = document.getElementById("emailError");
 
   await checkEmail(email, emailCheckMessage);
 });

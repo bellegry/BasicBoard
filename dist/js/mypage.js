@@ -32,7 +32,7 @@ function fetchUserProfile() {
       // 폼 필드에 사용자 프로필 데이터 넣기
       console.log("data : " + JSON.stringify(data, null, 2));
       // document.getElementById("_id").value = data._id; // DB ID
-      // document.getElementById("userId").value = data.userId; // 사용자 ID
+      document.getElementById("userId").value = data.userId; // 사용자 ID
       document.getElementById("name").value = data.name; // 이름
       // document.getElementById("password").value = data.password; // 비밀번호
       document.getElementById("email").value = data.email; // 이메일
