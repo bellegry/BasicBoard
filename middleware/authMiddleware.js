@@ -3,13 +3,20 @@ const jwt = require("jsonwebtoken");
 // 인증 미들웨어
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
+
+  // 인증 헤더가 없는 경우
+  if (!authHeader) {
+    console.log("인증 헤더 없음 authHeader: undefined");
+    return res.status(401).json({ message: "로그인이 필요합니다." });
+  }
+
   console.log("authHeader: " + authHeader);
   const token = authHeader && authHeader.split(" ")[1]; // Bearer token 형식
   console.log("token : " + token);
 
   if (!token) {
     console.log("인증 토큰 없음"); // 토큰이 없을 때 로그
-    return res.status(401).json({ message: "인증 토큰이 없습니다." });
+    return res.status(401).json({ message: "로그인이 필요합니다." });
   }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {

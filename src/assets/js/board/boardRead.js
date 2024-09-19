@@ -1,30 +1,41 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const urlParams = new URLSearchParams(window.location.search);
-  const postId = urlParams.get("id");
+console.log(`boardRead.js load`);
+const postContentDiv = document.querySelector("#postContent");
 
+postContentDiv.innerHTML("바보");
+
+const urlParams = new URLSearchParams(window.location.search);
+const postId = urlParams.get("id");
+console.log(postId);
+
+document.addEventListener("DOMContentLoaded", function () {
   // 게시글 정보 가져오기
   if (postId) {
     fetch(`/api/posts/${postId}`)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        response.json();
+      })
       .then((post) => {
-        const postContentDiv = document.querySelector("#postContent");
+        // post 객체가 존재하는지 확인
+        if (!post) {
+          throw new Error("Post not found");
+        }
+        console.log(post); // post 객체의 내용을 콘솔에서 확인
 
-        // Formatting the date to be more readable
-        const formattedDate = new Date(post.date).toLocaleDateString(); // Assuming `post.date` is the correct field
+        const formattedDate = post.date ? new Date(post.date).toLocaleDateString() : "No date available";
 
         postContentDiv.innerHTML = `
                   <h2>${post.title}</h2>
-                  <p>Written by: ${post.writer}</p>
+                  <p>Written by: ${post.userId}</p>
                   <p>${post.content}</p>
-                  <p>${formattedDate}</p>
+                  <p>${post.createdAt}</p>
               `;
       })
       .catch((error) => console.error("Error fetching post:", error));
-  }
-
-  if (!postId) {
+  } else {
     console.error("No post ID found in URL.");
-    return;
   }
 
   // Update 버튼 클릭 시 update.html로 이동

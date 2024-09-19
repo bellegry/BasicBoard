@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const postSchema = new Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "User", // User 모델과 연결됨
     required: true,
   },

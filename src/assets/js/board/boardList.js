@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         row.innerHTML = `
           <td>${index + 1}</td>
-          <td><a href="read.html?id=${post._id}">${post.title}</a></td>
-          <td>${post.writer}</td>
+          <td><a href="boardRead.html?id=${post._id}">${post.title}</a></td>
+          <td>${post.userId}</td>
           <td>${formattedDate}</td>
         `;
         postTableBody.appendChild(row);
